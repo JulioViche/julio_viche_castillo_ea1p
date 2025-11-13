@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'CalculadoraPerruna.dart';
+import '../components/atoms/custom_button.dart';
+import '../components/organisms/scientific_calculator_form.dart';
 
+// TEMPLATE/PAGE - Estructura completa usando Atomic Design
 class CalculadoraCientifica extends StatefulWidget {
   const CalculadoraCientifica({super.key});
 
@@ -19,7 +22,7 @@ class _CalculadoraCientificaState extends State<CalculadoraCientifica> {
       double resultado = sin(numero);
       setState(() {
         _resultado = 'sen($numero) = ${resultado.toStringAsFixed(6)}';
-      });
+      }); 
     } catch (e) {
       setState(() {
         _resultado = 'Error: Ingrese un número válido';
@@ -75,77 +78,42 @@ class _CalculadoraCientificaState extends State<CalculadoraCientifica> {
     }
   }
 
-  void _navegarACalculadoraPerruna() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const CalculadoraPerruna())
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Calculadora Científica'),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CalculadoraPerruna())
+            ),
+            icon: const Icon(Icons.pets),
+            tooltip: 'Ir a Calculadora Perruna',
+          ),
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text('Calculadora Científica'),
           const SizedBox(height: 20),
-              
-          TextField(
-            controller: _numeroController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'Número',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 10),
-              
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: _calcularSeno,
-                child: const Text('Seno'),
-              ),
-              ElevatedButton(
-                onPressed: _calcularCoseno,
-                child: const Text('Coseno'),
-              ),
+          
+          // ORGANISM - Formulario completo de calculadora científica
+          ScientificCalculatorForm(
+            numberController: _numeroController,
+            result: _resultado,
+            mathOperations: [
+              _calcularSeno,
+              _calcularCoseno,
+              _calcularTangente,
+              _calcularLogaritmoNatural,
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: _calcularTangente,
-                child: const Text('Tangente'),
-              ),
-              ElevatedButton(
-                onPressed: _calcularLogaritmoNatural,
-                child: const Text('Ln'),
-              ),
-            ],
-          ),
+          
           const SizedBox(height: 20),
-              
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: Text(
-              _resultado.isEmpty ? 'Resultado' : _resultado,
-              style: const TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 20),
-              
-          ElevatedButton(
-            onPressed: _navegarACalculadoraPerruna,
-            child: const Text('Ir a Calculadora Perruna'),
-          ),
+          
         ],
       ),
     );
